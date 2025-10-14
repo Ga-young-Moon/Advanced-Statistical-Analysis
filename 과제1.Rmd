@@ -1,0 +1,38 @@
+---
+title: "고급통계분석 - Assignment01"
+author: "20220866 문가영"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Problem 1.
+
+```{r}
+set.seed(1)
+n = 200
+x = seq(0, 1, length.out = n)
+y = sin(2*pi*x) + rnorm(n, sd = 0.15)
+```
+
+#### (a). 
+
+```{r}
+df = data.frame(x, y)
+write.csv(df, file = 'data/problem1.csv')
+```
+
+#### (b).
+
+```{r}
+
+```
+
+
+### Problem 2.
+
+#### (a).
+
