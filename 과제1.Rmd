@@ -38,6 +38,7 @@ write.csv(df, file = 'data/problem1.csv', row.names = FALSE)
 
 #### (a).
 
+버블 정렬 함수 구현:
 ```{r}
 # 버블 정렬
 bubble_sort <- function(vec, decreasing = FALSE){
@@ -95,6 +96,7 @@ print(x_desc)
 
 #### (b).
 
+퀵 정렬 함수 구현:
 ```{r}
 # 퀵 정렬
 quick_sort <- function(vec, decreasing = FALSE){
@@ -155,4 +157,105 @@ print(x_desc)
 ### Problem 3.
 
 #### (a).
+
+수치 미분 함수 구현:
+```{r}
+# 수치 미분
+num_diff <- function(f, x, h= 1e-6, method){
+  if (method == 'forward'){
+    result <- (f(x+h) - f(x)) / h
+    return(result)
+  }
+  else if (method == 'backward'){
+    result <- (f(x) - f(x-h)) / h
+    return(result)
+  }
+  else if (method == 'central'){
+    result <- (f(x+h) - f(x-h)) / (2*h)
+    return(result)
+  }
+  else{
+    stop('Choose the method you want to use.')
+  }
+}
+```
+
+
+구현한 수치 미분 알고리즘 실행 결과 확인:
+```{r}
+n <- 100
+x <- seq(0, 2*pi, length.out = n)
+
+# f 함수와 실제 도함수(f`) 정의
+f <- function(x){
+  return(cos(x) - x)
+}
+
+f_prime <- function(x){
+  return(-sin(x) - 1)
+}
+
+# 구현한 함수 적용
+# 1. 전진차분
+y_for <- num_diff(f, x, method= 'forward')
+
+# 2. 후진차분
+y_back <- num_diff(f, x, method= 'backward')
+
+# 3. 중심차분
+y_cen <- num_diff(f, x, method= 'central')
+```
+
+
+시각화:
+```{r}
+library(ggplot2)
+
+# 해석적 도함수 정의
+y_prime <- f_prime(x)
+
+# 시각화
+# 1. 전진차분
+df_for <- data.frame(x = x, analytic = y_prime, forward = y_for)
+
+p1 <- ggplot(df_for, aes(x = x)) +
+  geom_line(aes(y = analytic), color= 'black', size= 1.15) +
+  geom_line(aes(y = forward), color= 'red', size = 0.9) +
+  labs(title= '1. 전진차분 vs 해석적 도함수',
+       x= 'x',
+       y= 'f`(x)')
+
+# 2. 후진차분
+df_back <- data.frame(x= x, analytic = y_prime, backward = y_back)
+
+p2 <- ggplot(df_back, aes(x = x)) +
+  geom_line(aes(y = analytic), color= 'black', size= 1.15) +
+  geom_line(aes(y = backward), color= 'green', size = 0.9) +
+  labs(title= '2. 후진차분 vs 해석적 도함수',
+       x= 'x',
+       y= 'f`(x)')
+
+# 3. 중심차분
+df_cen <- data.frame(x= x, analytic = y_prime, central = y_cen)
+
+p3 <- ggplot(df_cen, aes(x = x)) +
+  geom_line(aes(y = analytic), color= 'black', size= 1.15) +
+  geom_line(aes(y = central), color= 'blue', size = 0.9) +
+  labs(title= '3. 중심차분 vs 해석적 도함수',
+       x= 'x',
+       y= 'f`(x)')
+
+
+# plot 출력
+print(p1)
+print(p2)
+print(p3)
+```
+
+
+#### (b).
+
+```{r}
+
+```
 
