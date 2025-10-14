@@ -2,7 +2,9 @@
 title: "고급통계분석 - Assignment01"
 author: "20220866 문가영"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -18,21 +20,139 @@ x = seq(0, 1, length.out = n)
 y = sin(2*pi*x) + rnorm(n, sd = 0.15)
 ```
 
+
 #### (a). 
 
 ```{r}
 df = data.frame(x, y)
-write.csv(df, file = 'data/problem1.csv')
+write.csv(df, file = 'data/problem1.csv', row.names = FALSE)
 ```
+
+
+#### (d).
+
+**GitHub 저장소 링크:** [20220866 문가영 GitHub 링크](https://github.com/Ga-young-Moon/Advanced-Statistical-Analysis)
+\
+
+### Problem 2.
+
+#### (a).
+
+```{r}
+# 버블 정렬
+bubble_sort <- function(vec, decreasing = FALSE){
+  n = length(vec) # 길이가 n인 입력 벡터
+  
+  # 오름차순 옵션
+  if (decreasing == FALSE){
+    for (i in 1:(n-1)){
+      for (j in 1:(n-i)){
+        if (vec[j] > vec[j+1]){
+          temp = vec[j]
+          vec[j] = vec[j+1]
+          vec[j+1] = temp
+        }
+      }
+    }
+  }
+  
+  # 내림차순 옵션
+  else{
+    for (i in 1:(n-1)){
+      for (j in 1:(n-i)){
+        if (vec[j] < vec[j+1]){
+          temp = vec[j]
+          vec[j] = vec[j+1]
+          vec[j+1] = temp
+        }
+      }
+    }
+  }
+  return(vec)
+}
+```
+
+
+구현한 버블 정렬 알고리즘 실행 결과 확인:
+```{r}
+set.seed(1)
+x = runif(10)
+
+print('***원본 벡터 (x)***')
+print(x)
+
+# 1. 오름차순 정렬 (decreasing = FALSE)
+x_asc = bubble_sort(x, decreasing = FALSE)
+print('***1. 오름차순 결과***')
+print(x_asc)
+
+# 2. 내림차순 정렬(decreasing = TRUE)
+x_desc = bubble_sort(x, decreasing = TRUE)
+print('***2. 내림차순 결과***')
+print(x_desc)
+```
+
 
 #### (b).
 
 ```{r}
-
+# 퀵 정렬
+quick_sort <- function(vec, decreasing = FALSE){
+  n = length(vec) # 길이가 n인 입력 벡터
+  
+  # 재귀 종료 조건
+  if (n <= 1){
+    return(vec)
+  }
+  
+  # Pivot 분리
+  pivot <- vec[1]
+  rest <- vec[-1]
+  
+  # 분할
+  # 오름차순 옵션
+  if (decreasing == FALSE){
+    Left <- rest[rest <= pivot]
+    Right <- rest[rest > pivot]
+  }
+  
+  # 내림차순 옵션
+  else{
+    Left <- rest[rest >= pivot]
+    Right <- rest[rest < pivot]
+  }
+  
+  # 재귀 호출
+  Left_sort <- quick_sort(Left, decreasing)
+  Right_sort <- quick_sort(Right, decreasing)
+  
+  # 결합
+  return(c(Left_sort, pivot, Right_sort))
+}
 ```
 
 
-### Problem 2.
+구현한 퀵 정렬 알고리즘 실행 결과 확인:
+```{r}
+set.seed(1)
+x = runif(10)
+
+print('***원본 벡터 (x)***')
+print(x)
+
+# 1. 오름차순 정렬 (decreasing = FALSE)
+x_asc = quick_sort(x, decreasing = FALSE)
+print('***1. 오름차순 결과***')
+print(x_asc)
+
+# 2. 내림차순 정렬(decreasing = TRUE)
+x_desc = quick_sort(x, decreasing = TRUE)
+print('***2. 내림차순 결과***')
+print(x_desc)
+```
+\
+
+### Problem 3.
 
 #### (a).
 
