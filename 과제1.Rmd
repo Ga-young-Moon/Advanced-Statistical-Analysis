@@ -583,18 +583,114 @@ solve(A, b)
 
 #### (a).
 
+Gaussian Kernel 함수 구현:
+```{r}
+gaussian_kernel <- function(x, x_prime, rho = 1){
+  diff_sq <- (x - x_prime)^2
+  result <- exp(- rho * diff_sq)
+  return(result)
+}
+```
 
 
 #### (b).
 
+KRR 적합 함수 구현:
+```{r}
+fit_krr <- function(X, y, lambda = 0.0001, rho = 1){
+  # 데이터 크기(n) 확인
+  n <- length(y)
+  
+  # 커널 행렬 K 계산
+  K <- outer(as.numeric(X), as.numeric(X), function(a, b){
+    exp(- rho * (a - b)^2)
+  })
+  
+  # 정규화 항 계산: K + lambda * I_n
+  K_reg <- K + lambda * diag(n)
+  
+  # 계수 alpha 계산: alpha = (K + lambda * I_n)^(-1) * y
+  alpha <- solve(K_reg, y)
+  
+  structure(list(alpha = alpha, X_train = X, y_train = y, lambda = lambda, rho = rho), class = 'krr')
+}
+```
 
 
 #### (c).
 
+predict 함수 확장 구현:
+```{r}
+predict.krr <- function(obj, X_new, ...){
+  
+  # 파라미터 추출
+  alpha <- obj$alpha
+  X_train <- as.numeric(obj$X_train)
+  rho <- obj$rho
+  
+  sapply(X_new, function(x){
+    k_x_X <- exp(- rho * (x - X_train)^2)
+    sum(k_x_X * alpha)
+  })
+}
+```
 
 
 #### (d).
 
+plot 함수 구현:
+```{r}
+plot.krr <- function(x, ...) {
+    
+    # 필요한 데이터 추출 및 예측 곡선 생성
+    model <- x 
+    
+    # 훈련 데이터 X 범위 내에서 부드러운 곡선을 위한 새로운 X 벡터 생성
+    X_train <- model$X_train
+    y_train <- model$y_train
+    
+    # X_train의 최소/최대값 기준으로 100개의 새로운 X 값 생성
+    X_new <- seq(min(X_train), max(X_train), length.out = 100)
+    
+    # 예측값 계산
+    Y_pred <- predict.krr(model, X_new) 
+    
+    # 시각화를 위한 데이터프레임 생성
+    df_train <- data.frame(X = X_train, Y = y_train)
+    df_pred <- data.frame(X = X_new, Y = Y_pred)
+    
+    # 시각화
+    library(ggplot2)
+    
+    p <- ggplot() +
+        geom_point(data = df_train, aes(x = X, y = Y), 
+                   color = 'blue', size = 3, alpha = 0.7) +
+        geom_line(data = df_pred, aes(x = X, y = Y), 
+                  color = 'red', size = 1) +
+        labs(
+            title = paste0('Kernel Ridge Regression 예측 곡선 (λ=', model$lambda, ', ρ=', model$rho, ')'),
+            x = 'X',
+            y = 'Y'
+        ) +
+        theme_minimal()
+        
+    print(p)
+}
+```
 
 
 #### (e).
+
+```{r}
+set.seed(1)
+n = 150
+X = matrix(runif(n, -1, 1), ncol = 1)
+ftrue = function(x) sin(2*pi*x) + 0.5 * cos(4*pi*x)
+y = ftrue(X[, 1]) + rnorm(n, sd = 0.1)
+
+# 모델 적합
+krr_model <- fit_krr(X, y)
+
+# 예측 및 시각화
+plot(krr_model)
+```
