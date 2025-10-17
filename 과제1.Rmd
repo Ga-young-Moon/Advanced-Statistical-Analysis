@@ -497,28 +497,86 @@ print(A)
 
 #### (b).
 
+forward 함수 구현:
 ```{r}
 forward <- function(L, y){
   # 행렬의 크기(n) 구하기
   n <- nrow(L)
-  
   # 결과 벡터 z 초기화
   z <- numeric(n)
   
-  for (i in 1:n){
+  for (i in seq_len(n)){
     
+    if (i > 1){
+      idx <- seq_len(i - 1)
+      current_sum <- sum(L[i, idx] * z[idx])
+    }
+    else{
+      current_sum <- 0
+    }
+    z[i] = (y[i] - current_sum) / L[i, i]
   }
+  return(z)
 }
 ```
 
 
 #### (c).
 
+backward 함수 구현:
+```{r}
+backward <- function(L_t, z){
+  # 행렬의 크기(n) 구하기
+  n <- nrow(L_t)
+  # 결과 벡터 x 초기화
+  x <- numeric(n)
+  
+  for (i in n:1){
+    if (i < n){
+      idx <- (i + 1):n
+      current_sum <- sum(L_t[i, idx] * x[idx])
+    }
+    else{
+      current_sum <- 0
+    }
+    x[i] = (z[i] - current_sum) / L_t[i, i]
+  }
+  return(x)
+}
+```
 
 
 #### (d).
 
+forward / backward 함수 결과 확인:
+```{r}
+# 행렬 A
+A <- matrix(c(4, 2, 2, 2, 5, 1, 2, 1, 3), 3)
 
+# 벡터 b
+b <- c(1, -2, 3)
+
+# 상삼각행렬(U)과 하삼각행렬(L)
+U <- chol(A)
+L <- t(U)
+
+# 1. forward 함수 결과
+z <- forward(L, b)
+print(z)
+# forwardsolve와 비교
+z_true <- forwardsolve(L, b)
+all.equal(z, as.vector(z_true))
+
+# 2. backward 함수 결과
+x <- backward(U, z)
+print(x)
+# backsolve와 비교
+x_true <- backsolve(U, z)
+all.equal(x, as.vector(x_true))
+
+# solve(A, b) 결과
+solve(A, b)
+```
 \
 
 ### Problem 6.
