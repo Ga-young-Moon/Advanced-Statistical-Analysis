@@ -1,0 +1,6 @@
+"0","result <- data.frame("
+"0","  Method = c('R', 'Rcpp'),"
+"0","  mean_time = c(mean(times_r), mean(times_rcpp))"
+"0",")"
+"0",""
+"0","print(result)"
