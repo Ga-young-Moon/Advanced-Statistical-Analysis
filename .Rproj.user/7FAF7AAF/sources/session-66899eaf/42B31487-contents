@@ -2,7 +2,9 @@
 title: "고급통계분석 - Assignment02"
 author: "20220866 문가영"
 date: "2025-12-07"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
