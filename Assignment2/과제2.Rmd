@@ -76,3 +76,15 @@ result <- data.frame(
 
 print(result)
 ```
+
+
+### Probelm 3.
+
+
+#### (c).
+![그림1: rho가 큰 값을 가질 때](picture/high rho.png)
+![그림2: rho가 작은 값을 가질 때](picture/low rho.png)
+![그림3: lambda가 큰 값을 가질 때](picture/high lambda.png)
+![그림4: lambda가 작은 값을 가질 때](picture/low lambda.png)
+
+$\rightarrow$ rho 값은 그래프의 부드러운 정도를 정하고, lambda 값은 그래프가 데이터를 따라가는, 즉 적합하는 정도를 결정한다. (그렇기 때문에 과적합이 이러나지 않기 위해 패널티 항 앞에 lambda 파라미터를 사용한다.)

@@ -1,4 +1,0 @@
-"0","gaussian_kernel_mat <- function(x, rho = 1){"
-"0","  x <- as.numeric(x)"
-"0","  outer(x, x, function(a, b) exp(-rho * (a - b)^2))"
-"0","}"
