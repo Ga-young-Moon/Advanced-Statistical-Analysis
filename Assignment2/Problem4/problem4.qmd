@@ -1,0 +1,83 @@
+---
+title: "Assignment02 - Problem4"
+author: "20220866 문가영"
+format: docx
+editor: visual
+---
+
+### Problem 4.
+
+```{r}
+library(reticulate)
+py_config() # r 환경에서의 python 경로
+py_install(c('pandas', 'scikit-learn')) # 필요한 python 패키지 설치
+```
+
+#### (a).
+
+```{r}
+library(dplyr)
+
+set.seed(1)
+data(iris)
+
+n <- nrow(iris)
+index <- sample(n, size = 0.7*n)
+train <- iris[index, ]; test <- iris[-index, ]
+
+write.csv(train, 'data/train.csv', row.names = FALSE)
+write.csv(test, 'data/test.csv', row.names = FALSE)
+```
+
+
+#### (b).
+
+```{python}
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score
+
+train = pd.read_csv('data/train.csv')
+test = pd.read_csv('data/test.csv')
+
+X_train = train.drop('Species', axis = 1)
+y_train = train['Species']
+X_test = test.drop('Species', axis = 1)
+y_test = test['Species']
+
+rf = RandomForestClassifier(random_state = 1)
+rf.fit(X_train, y_train)
+
+y_pred = rf.predict(X_test)
+print(y_pred)
+
+confusion_mat = confusion_matrix(y_test, y_pred)
+acc = accuracy_score(y_test, y_pred)
+```
+
+
+#### (c).
+
+```{r}
+conf_mat <- py$confusion_mat
+acc <- py$acc
+
+conf_mat
+```
+
+```{r}
+library(ggplot2)
+library(reshape2)
+
+cm_df <- melt(conf_mat)
+colnames(cm_df) <- c('True', 'Pred', 'Count')
+
+cm_df$True <- factor(cm_df$True, levels = sort(unique(cm_df$True)))
+cm_df$Pred <- factor(cm_df$Pred, levels = sort(unique(cm_df$Pred)))
+
+ggplot(cm_df, aes(x = Pred, y = True, size = Count, color = Count)) +
+  geom_point(alpha = 0.75) +
+  labs(x = 'Predicted Class', y = 'True Class',
+       size = 'Count') +
+  theme_minimal()
+```
